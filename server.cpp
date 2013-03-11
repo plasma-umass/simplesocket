@@ -31,7 +31,9 @@ void * serve (void * cv)
     int num = messageNumber();
     cout << "[" << num << "] " << buffer << endl;
     // Now reply.
-    *c << "Received message " << num;
+    stringstream str;
+    str << "Received message " << num;
+    *c << str.str();
   }
   delete c;
   return NULL;
