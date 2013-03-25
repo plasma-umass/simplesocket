@@ -52,7 +52,8 @@ public:
   simplesocket& operator<<(TYPE t) {
     stringstream output;
     output << t;
-    auto buf = output.str().c_str();
+    auto buf_str = output.str();
+    auto buf = buf_str.c_str();
     write (buf, strlen(buf));
     return *this;
   }
