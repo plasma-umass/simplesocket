@@ -35,12 +35,13 @@ public:
 		int timeout = -1,
 		bool debug = false)
     : _nameResolved (false),
-      _seenEof(false),
+      _seenEof (false),
       _port (port),
       _hostname (str),
       _name (_hostname + string(":") + itos(_port)),
       _timeout (timeout),
-      _debug(debug)
+      _debug (debug),
+      _socketfd (-1)
   {}
 
   virtual ~simplesocket () {
@@ -67,14 +68,24 @@ public:
     return *this;
   }
 
+  /// @brief True iff this socket is currently open.
+  bool isOpen() const {
+    return (_socketfd != -1);
+  }
+
+  /// @brief True iff this socket has read an EOF.
   bool seenEof() const {
+    // seenEof => ! isOpen().
+    assert (!_seenEof || !isOpen());
     return _seenEof;
   }
 
+  /// @brief Write len bytes from a buffer into the socket.
   int write (const char * buf, size_t len) {
     return sendNBytes ((unsigned char*) buf, len, true);
   }
 
+  /// @brief Read at most len bytes into the buffer from the socket.
   int read (char * buf, int len) {
     return recvNBytes(buf, len, true);
   }

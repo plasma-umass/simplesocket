@@ -101,7 +101,9 @@ ssize_t simplesocket::sendNBytes (unsigned char* data, int size, bool lessOk) {
     if ((ret < 0) && (errno == EINTR))
       continue; 
     else if (ret < 0){
-      perror ("Error ");
+      if (_debug) {
+	perror ("Simplesocket error: ");
+      }
       assert (errno > 0);
       close();
       return -errno;
