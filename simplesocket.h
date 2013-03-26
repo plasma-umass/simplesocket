@@ -1,5 +1,12 @@
 // -*- C++ -*-
 
+/**
+ * @class  simplesocket
+ * @author Emery Berger <http://www.cs.umass.edu/~emery>
+ * @brief  A convenient wrapper for UNIX sockets.
+ *
+ **/
+
 #ifndef SIMPLESOCKET_H
 #define SIMPLESOCKET_H
 
@@ -48,7 +55,7 @@ public:
     close();
   }
 
-  /// Write any value out to the socket.
+  /// @brief Write any value out to the socket.
   template <class TYPE>
   simplesocket& operator<<(TYPE t) {
     stringstream output;
@@ -59,7 +66,7 @@ public:
     return *this;
   }
 
-  /// Read in a string from the socket.
+  /// @brief Read in a string from the socket.
   simplesocket& operator>>(string& t) {
     char buf[MAXBUF+1];
     memset (buf, 0, MAXBUF+1);
@@ -100,23 +107,37 @@ public:
     return _name.c_str();
   }
 
+  /// @brief The socket's hostname.
   const char * hostname() const {
     return _hostname.c_str();
   }
 
+  /// @brief The socket port.
   int port() const {
     return _port;
   }
 
+  /// @return true iff the name successfully resolved to an IP address.
   bool resolved (void) const {
     return _nameResolved;
   }
 
+  /// @brief Close down the connection.
   void close();
+
+  /// @brief Receive up to (or exactly) a number of bytes of data.
   ssize_t recvNBytes (void* data, int size, bool lessOk=false);
+
+  /// @brief Send up to (or exactly) a number of bytes of data.
   ssize_t sendNBytes (unsigned char* data, int size, bool lessOk=false);
+
+  /// @brief Establish a connection to a remote server.
   bool connect();
+
+  /// @brief Act as a server and await connections.
   void serve();
+
+  /// @brief Accept a connection.
   simplesocket * accept();
 
   void initializeClient() {
@@ -130,17 +151,17 @@ private:
   void resolve (struct addrinfo * hint);
   int descriptorReady (int fd, int timeout);
 
-  struct addrinfo * _addresses;
-  int _socketfd;
-  bool _nameResolved;
-  bool _seenEof;
-  int _port;
-  const string _hostname;
-  const string _name;
-  ostringstream _str;
-  int _timeout;
-  bool _debug;
-   
+  struct addrinfo * 	_addresses;
+  int 			_socketfd;
+  bool 			_nameResolved;
+  bool 			_seenEof;
+  const int 		_port;
+  const string 		_hostname;
+  const string 		_name;
+  ostringstream 	_str;
+  int 			_timeout;
+  bool 			_debug;
+
   string itos (int v) {
     stringstream str;
     str << v;
